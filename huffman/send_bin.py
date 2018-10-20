@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 import serial
 import sys
 
 ser = serial.Serial(
-    '/dev/ttyACM0',
+    '/dev/ttyACM1',
     baudrate=57600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -11,6 +12,6 @@ ser = serial.Serial(
     )
 with open(sys.argv[1], 'rb') as file:
     for i in file:
-        ser.write("~~")
+        ser.write(b"~~")
         ser.write(i)
-        ser.write("||")
+        ser.write(b"||")
