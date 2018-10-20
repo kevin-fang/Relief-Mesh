@@ -28,15 +28,19 @@ msg_data = {}
 
 @NC.notify_on('broadcast')
 def broadcast_store(data, msg_id):
-    msg_data[msg_id] = data
+    msg_data[msg_id] = (data, time())
 
 
 @mod.route('/history', methods=['GET'])
 def history_get():
+
+    data = list(msg_data.items())
+    data.sort(key=lambda x: x[1][1])
     return jsonify({
         'ok': True,
         'data': [{'msg_id': msg_id,
-                  'data': data} for msg_id, data in msg_data.items()]
+                  'data': msg,
+                  'timestamp': timestamp} for msg_id, (msg, timestamp) in data]
     })
 
 
@@ -66,3 +70,10 @@ def broadcast_post():
         "data": data,
         "msg_id": msg_id
     })
+
+
+@mod.route('/chat', methods=['GET'])
+def chat_get():
+    print(request.url_root[:-1])
+    data = open('Routes/chat.html').read()
+    return data.replace('$base_url', request.url_root[:-1])

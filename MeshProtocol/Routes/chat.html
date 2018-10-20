@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+
+      $(function getHistory() {
+
+        $.get( "$base_url/history", function( data ) {
+          messages = data['data']
+          messages.forEach(function(element) {
+            $('#messages').append($('<li>').text(element['data']));
+            window.scrollTo(0, document.body.scrollHeight);
+          })
+        });
+
+      })
+
+      $(function VictraStreamer() {
+        var socket = new io('$base_url/mesh');
+
+        socket.connect();
+        socket.on('connect', function () {
+            console.log('Client has connected to the server');
+        });
+
+        socket.on('broadcast', function (data) {
+            console.log('Received a new broadcast');
+            console.log(data);
+            // var msg_data = JSON.parse(data);
+            $('#messages').append($('<li>').text(data['data']));
+            window.scrollTo(0, document.body.scrollHeight);
+            // process the transaction data here
+        });
+
+        socket.on('disconnect', function () {
+            console.log('The client has disconnected!');
+        });
+
+        $('form').submit(function(){
+          console.log('emitting')
+
+          $.ajax({
+          type: "POST",
+          url: '$base_url/broadcast',
+          data: JSON.stringify({'data': $('#m').val()}),
+          success: function(data) {
+          console.log(data)},
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          });
+
+          $('#m').val('');
+          return false;
+        });
+
+      });
+
+    </script>
+  </body>
+</html>
