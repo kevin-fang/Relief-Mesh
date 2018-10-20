@@ -40,7 +40,7 @@ def start_streamer():
 
 
 @NC.notify_on('queue_broadcast')
-def queue_broadcast(data, msg_id):
+def queue_broadcast(data, msg_id=None):
     myre = re.compile('^(.{4}):.*$')
     if myre.match(data):
         msg_id = myre.findall(data)
