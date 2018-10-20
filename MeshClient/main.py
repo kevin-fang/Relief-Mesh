@@ -13,7 +13,7 @@ class Streamer(BaseNamespace):
     def on_broadcast(self, data):
         print('{}: {}'.format(data['msg_id'], data['data']))
 
-host, port = 'api.pillup.org', 80
+host, port = '0.0.0.0', 8080
 def run_socket():
 	socket = SocketIO(host, port)
 	stream_namespace = socket.define(Streamer, '/mesh')

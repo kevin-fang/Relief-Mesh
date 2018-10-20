@@ -44,6 +44,7 @@ class NotificationCenter(object):
             return
 
         for method in self.observers[key]:
+            print('posting to', key, method)
             try:
 
                 if threaded:

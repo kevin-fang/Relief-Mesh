@@ -62,7 +62,7 @@ def broadcast_post():
         return _error("data too large")
 
     NC.default().post_notification('queue_broadcast',
-                                   threaded=False,
+                                   threaded=True,
                                    data=data,
                                    msg_id=msg_id)
     return jsonify({
@@ -72,6 +72,11 @@ def broadcast_post():
         "data": data,
         "msg_id": msg_id
     })
+
+
+@mod.route('/reset', methods=['GET'])
+def reset_get():
+    msg_data = {}
 
 
 @mod.route('/chat', methods=['GET'])

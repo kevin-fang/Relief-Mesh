@@ -1,3 +1,4 @@
+from gevent import monkey;monkey.patch_all()
 from app import create_app, socketio
 from platform import system as st
 import Socket
@@ -7,7 +8,7 @@ import sys
 
 def main():
 
-    app = create_app(False)
+    app = create_app(True)
 
     if not len(sys.argv) >= 2 or sys.argv[1] != 'server':
         print('running streamer')

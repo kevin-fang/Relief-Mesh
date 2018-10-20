@@ -1,41 +1,160 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <title>Socket.IO chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+            background: #F2F2F2;
+        }
+
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 0.1em;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding-left: 20px;
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+
+        .messageBox {
+            padding-top: 7px;
+        }
+
+        .message {
+            background-color: #9AC1BF;
+            display: inline-block;
+            color: #FFFFFF;
+            padding: 10px 15px;
+            max-width: 75%;
+            word-break: break-all;
+            line-height: 130%;
+            border-radius: 9px 9px 9px 0;
+        }
+
+        .header-container {
+            position:fixed;
+            width: 100%;
+            display: table;
+            align-content: center;
+            font-weight: lighter;
+            font-size: 20px;
+        }
+        .header {
+            width: 100%;
+            height: 70px;
+            display: table-cell;
+            background-color: #FFFFFF;
+            text-align: center;
+            color: white;
+            vertical-align: middle;
+            /* Mesh Net: */
+            font-family: SFProDisplay-Light;
+            font-size: 25px;
+            color: #69727F;
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        .button {
+            position: fixed;
+            height: 60px;
+            width: 60px;
+            bottom: 1.1em;
+            right: 1.5em;
+            background-color: #7EAEAF;
+            border-radius: 30px;
+            color: white;
+            /*padding-top: 5px;*/
+            /*padding-bottom: 5px;*/
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        form {
+            background: #F9F9F9;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        form input {
+            border: 0;
+            width: 100%;
+            padding-right: 0.1em;
+            padding-left: 1.5em;
+            height: 4em;
+            padding-bottom: 0.1em;
+            padding-top: 0.1em;
+            background-color: transparent;
+            margin-right: .5%;
+        }
+
+
     </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
+</head>
+<body>
 
-      $(function getHistory() {
+<div class="header-container">
+    <div class="header">MeshNet</div>
+</div>
+<ul id="messages"></ul>
+<form action="">
+    <input id="m" autocomplete="off" placeholder="Type something"/>
+    <button class="button">Send</button>
+</form>
 
-        $.get( "$base_url/history", function( data ) {
-          messages = data['data']
-          messages.forEach(function(element) {
-            $('#messages').append($('<li>').text(element['data']));
-            window.scrollTo(0, document.body.scrollHeight);
-          })
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+<script>
+
+    function addMessage(element) {
+        var li = $("<li class='messageBox'>")
+        var div = $('<div class="message"></div>')
+        div.text(element['data'])
+        li.append(div);
+        $('#messages').append(li);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    $(function getHistory() {
+
+        $.get("$base_url/history", function (data) {
+            messages = data['data']
+            messages.forEach(function (element) {
+                addMessage(element);
+            })
         });
 
-      })
+    })
 
-      $(function VictraStreamer() {
+    function test() {
         var socket = new io('$base_url/mesh');
 
         socket.connect();
@@ -47,34 +166,36 @@
             console.log('Received a new broadcast');
             console.log(data);
             // var msg_data = JSON.parse(data);
-            $('#messages').append($('<li>').text(data['data']));
-            window.scrollTo(0, document.body.scrollHeight);
+            addMessage(data);
             // process the transaction data here
         });
 
         socket.on('disconnect', function () {
             console.log('The client has disconnected!');
         });
+    }
+    ;
 
-        $('form').submit(function(){
-          console.log('emitting')
+    test()
 
-          $.ajax({
-          type: "POST",
-          url: '$base_url/broadcast',
-          data: JSON.stringify({'data': $('#m').val()}),
-          success: function(data) {
-          console.log(data)},
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          });
+    $('form').submit(function () {
+        console.log('emitting')
 
-          $('#m').val('');
-          return false;
+        $.ajax({
+            type: "POST",
+            url: '$base_url/broadcast',
+            data: JSON.stringify({'data': $('#m').val()}),
+            success: function (data) {
+                console.log(data)
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
         });
 
-      });
+        $('#m').val('');
+        return false;
+    });
 
-    </script>
-  </body>
+</script>
+</body>
 </html>

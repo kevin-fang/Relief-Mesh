@@ -19,9 +19,9 @@ class Streamer(BaseNamespace):
         print('Streamer: disconnected')
 
     def on_broadcast(self, data):
-        # print('{}: {}'.format(data['msg_id'], data['data']))
+        print('{}: {}'.format(data['msg_id'], data['data']))
         NC.default().post_notification('queue_broadcast',
-                                       threaded=False,
+                                       threaded=True,
                                        data=data['data'],
                                        msg_id=data['msg_id'])
         print(data)
