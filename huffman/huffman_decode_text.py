@@ -10,8 +10,8 @@ with open('tree.bin', 'rb') as binary_file:
 	h = pickle.loads(f)
 
 def decompress(input_text):
-	output_text = h.decompress_from_text(input_text)
-	print(output_text)
+    output_text = h.decompress_from_text(input_text)
+    return output_text
 
 if __name__ == "__main__":
 	while True:

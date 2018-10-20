@@ -12,13 +12,13 @@ ser = serial.Serial(
     )
 
 def send(text):
-    ser.write("~~")
+    ser.write(b"~~")
     ser.write(text)
-    ser.write("||")
+    ser.write(b"||")
 
 
 if __name__ == "__main__":
     text_to_send = input()
-    encoded = huffman_encode_text.encode_text(text_to_send)
+    encoded = huffman_encode_text.encode_text(str(len(text_to_send)) + "," + text_to_send)
     print(encoded)
     send(encoded)
