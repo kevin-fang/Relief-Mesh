@@ -4,6 +4,8 @@ import re
 from threading import Thread
 from socketIO_client import SocketIO, BaseNamespace
 import requests
+import logging
+
 id_queue = list()
 
 
@@ -25,13 +27,16 @@ class Streamer(BaseNamespace):
 
 
 def run_socket():
+    logging.getLogger('socketIO-client').setLevel(logging.CRITICAL)
     host, port = 'api.pillup.org', 80
     socket = SocketIO(host, port)
     stream_namespace = socket.define(Streamer, '/mesh')
     socket.wait()
 
+
 def start_streamer():
     Thread(target=run_socket).start()
+
 
 @NC.notify_on('queue_broadcast')
 def queue_broadcast(data, msg_id):

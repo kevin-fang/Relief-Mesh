@@ -2,12 +2,16 @@ from app import create_app, socketio
 from platform import system as st
 import Socket
 import Controller
+import sys
 
 
 def main():
 
     app = create_app(False)
-    Controller.start_streamer()
+
+    if not len(sys.argv) > 2 or sys.argv[1] != 'server':
+        print('running streamer')
+        Controller.start_streamer()
     socketio.run(app, host='0.0.0.0', port=8080 if st() == 'Darwin' else 80, debug=True, use_reloader=False)
 if __name__ == '__main__':
     main()
