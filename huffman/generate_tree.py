@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from huffman import HuffmanCoding
 import pickle
 
