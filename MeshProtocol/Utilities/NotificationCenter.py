@@ -44,7 +44,7 @@ class NotificationCenter(object):
             return
 
         for method in self.observers[key]:
-            print('posting to', key, method)
+            print('posting to', key, method.__name__)
             try:
 
                 if threaded:
@@ -52,7 +52,7 @@ class NotificationCenter(object):
                 else:
                     method(*args, **kwargs)
             except Exception as err:
-                # todo log error
+                print(err)
                 pass
 
     @staticmethod

@@ -14,19 +14,23 @@ def receive():
         line = str(ser.readline())
         if line and line != sent and line != "b''":
             print(line)
-            NC.default().post_notification('queue_broadcast',
-                                           data=line, msg_id=None)
+            sent = line
+            #NC.default().post_notification('queue_broadcast',
+             #                              data=line, msg_id=None)
 
 
 @NC.notify_on('broadcast')
-def send(text):
+def send(data, msg_id=None):
     global sent
     global ser
 
     if not ser:
         return
-    
-    sent = '~~{}||'.format(text)
+    text = data
+    temp = str(bytes('~~{}||\r\n'.format(text).encode()))
+    if temp == sent:
+        return
+    sent = temp
     print('sending {}'.format(sent))
     text = bytes(text.encode())
     ser.write(b"~~")
