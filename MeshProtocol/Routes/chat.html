@@ -37,22 +37,43 @@
             margin: 0;
             padding-left: 20px;
             padding-top: 80px;
-            padding-bottom: 80px;
+            padding-right: 13px;
+            padding-bottom: 90px;
         }
 
         .messageBox {
             padding-top: 7px;
+            width: 100%;
+            display: inline-block;
+            background-color: transparent;
+            /*background-color: blue;*/
         }
 
         .message {
-            background-color: #9AC1BF;
-            display: inline-block;
+            float: left;
+            background-color: #7EAEAF;
+            display: block;
             color: #FFFFFF;
             padding: 10px 15px;
-            max-width: 75%;
-            word-break: break-all;
+            max-width: 205px;
             line-height: 130%;
+            word-break: break-all;
             border-radius: 9px 9px 9px 0;
+        }
+
+        .message_sent {
+            float: right;
+
+            /*position: absolute;*/
+            /*margin-right: 0 !important;*/
+            background-color: #B2B0B0;
+            display: block;
+            color: #F9F9F9;
+            padding: 10px 15px;
+            max-width: 205px;
+            line-height: 130%;
+            word-break: break-all;
+            border-radius: 9px 9px 0px 9px;
         }
 
         .header-container {
@@ -63,6 +84,7 @@
             font-weight: lighter;
             font-size: 20px;
         }
+
         .header {
             width: 100%;
             height: 70px;
@@ -134,11 +156,40 @@
 
 <script>
 
+    function makeid(len) {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (var i = 0; i < len; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
+    var myid = makeid(2);
+    if (localStorage.getItem('myid') != null) {
+        myid = localStorage.getItem('myid');
+    }
+    localStorage.setItem('myid', myid);
+
     function addMessage(element) {
-        var li = $("<li class='messageBox'>")
-        var div = $('<div class="message"></div>')
-        div.text(element['data'])
+
+        msg = element['data'];
+        msg = msg.split(':', 2);
+        console.log(msg);
+
+        var li = $("<li class='messageBox'>");
+
+        var div = null;
+        if (msg[0] == myid) {
+            div = $('<div class="message_sent"></div>')
+        } else {
+            div = $('<div class="message"></div>');
+        }
+
+        div.text(msg[1]);
         li.append(div);
+
         $('#messages').append(li);
         window.scrollTo(0, document.body.scrollHeight);
     }
@@ -174,7 +225,6 @@
             console.log('The client has disconnected!');
         });
     }
-    ;
 
     test()
 
@@ -184,7 +234,7 @@
         $.ajax({
             type: "POST",
             url: '$base_url/broadcast',
-            data: JSON.stringify({'data': $('#m').val()}),
+            data: JSON.stringify({'data': myid + ':' + $('#m').val()}),
             success: function (data) {
                 console.log(data)
             },
