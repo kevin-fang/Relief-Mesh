@@ -20,6 +20,19 @@ def index_get():
 		"time": time()
 		})
 
+msg_data = {}
+@NC.notify_on('broadcast')
+def broadcast_store(data, msg_id):
+	msg_data[msg_id] = data
+
+@mod.route('/history', methods=['GET'])
+def history_get():
+	return jsonify({
+		'ok': True,
+		'data': [{'msg_id': msg_id,
+				  'data': data} for msg_id, data in msg_data.items()]
+		})
+
 @mod.route('/broadcast', methods=['POST'])
 def broadcast_post():
 
@@ -34,13 +47,15 @@ def broadcast_post():
 	if len(byte) > 250:
 		return _error("data too large")
 
+	msg_id = str(uuid4())[1:5].upper()
 	NC.default().post_notification('broadcast',
  								   data=data,
- 								   device_id=device_id)
+ 								   msg_id=msg_id)
 
 	return jsonify({
 		"ok": True,
 		"node": device_id,
 		"bytes": len(byte),
-		"data": data
+		"data": data,
+		"msg_id": msg_id
 		})

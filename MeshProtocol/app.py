@@ -2,6 +2,7 @@ from flask import Flask
 from Routes import API
 from flask_cors import CORS
 from flask_socketio import SocketIO
+import Controller
 
 socketio = SocketIO()
 
