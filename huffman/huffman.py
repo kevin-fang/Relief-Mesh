@@ -22,13 +22,6 @@ class HeapNode:
 				return -1
 		return self.freq < other.freq
 
-	def __cmp__(self, other):
-		if other == None:
-			return -1
-		if not isinstance(other, HeapNode):
-			return -1
-		return self.freq > other.freq
-
 
 class HuffmanCoding:
 	def __init__(self, path):
@@ -86,6 +79,7 @@ class HuffmanCoding:
 	def get_encoded_text(self, text):
 		encoded_text = ""
 		for character in text:
+
 			encoded_text += self.codes[character]
 		return encoded_text
 
@@ -111,6 +105,40 @@ class HuffmanCoding:
 			b.append(int(byte, 2))
 		return b
 
+	def compress_with_predefined_tree(self, input_path):
+		filename, file_extension = os.path.splitext(input_path)
+		output_path = filename + ".bin"
+		with open(input_path, 'r+') as file, open(output_path, 'wb') as output:
+			text = file.read()
+			text = text.rstrip()
+
+			encoded_text = self.get_encoded_text(text)
+			padded_encoded_text = self.pad_encoded_text(encoded_text)
+
+			b = self.get_byte_array(padded_encoded_text)
+			output.write(bytes(b))
+
+		print("Compressed with predefined tree")
+		return output_path
+
+	def generate_tree(self):
+		filename, file_extension = os.path.splitext(self.path)
+		output_path = filename + ".bin"
+
+		with open(self.path, 'r+') as file:
+			text = file.read()
+			text = text.rstrip()
+
+			frequency = self.make_frequency_dict(text)
+			self.make_heap(frequency)
+			self.merge_nodes()
+			self.make_codes()
+
+			encoded_text = self.get_encoded_text(text)
+			padded_encoded_text = self.pad_encoded_text(encoded_text)
+
+		print("Compressed")
+		return output_path
 
 	def compress(self):
 		filename, file_extension = os.path.splitext(self.path)
@@ -161,7 +189,7 @@ class HuffmanCoding:
 
 
 	def decompress(self, input_path):
-		filename, file_extension = os.path.splitext(self.path)
+		filename, file_extension = os.path.splitext(input_path)
 		output_path = filename + "_decompressed" + ".txt"
 
 		with open(input_path, 'rb') as file, open(output_path, 'w') as output:
