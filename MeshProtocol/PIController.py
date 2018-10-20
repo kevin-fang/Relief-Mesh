@@ -30,7 +30,7 @@ def send(text):
 
 def start():
     serial.Serial(
-        '/dev/ttyACM0',
+        '/dev/ttyAMA0',
         baudrate=57600,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
