@@ -12,7 +12,7 @@ def receive():
 
     while True:
         line = str(ser.readline())
-        if line and line != sent:
+        if line and line != sent and line != "b''":
             NC.default().post_notification('queue_broadcast',
                                            data=line, msg_id=None)
 
