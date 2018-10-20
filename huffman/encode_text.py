@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from huffman import HuffmanCoding
 import pickle
 import sys
@@ -19,4 +20,4 @@ def encode_text(text):
 
 if __name__ == "__main__":
 	for item in sys.argv[1:]:
-		print(h.compress_input_with_predefined_tree(item))
+		print(h.compress_file_with_predefined_tree(item))

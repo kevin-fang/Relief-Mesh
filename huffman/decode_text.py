@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from huffman import HuffmanCoding
 import pickle
 
@@ -14,7 +15,7 @@ def decompress(input_text):
     return output_text
 
 if __name__ == "__main__":
-	while True:
-		input_text = input()
-		output_text = h.decompress_from_text(input_text)
-		print(output_text)
+    while True:
+        input_text = input()
+    	output_text = h.decompress_from_text(input_text)
+    	print(output_text)
