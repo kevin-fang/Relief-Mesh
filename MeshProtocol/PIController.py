@@ -13,6 +13,7 @@ def receive():
     while True:
         line = str(ser.readline())
         if line and line != sent and line != "b''":
+            print(line)
             NC.default().post_notification('queue_broadcast',
                                            data=line, msg_id=None)
 
@@ -20,8 +21,13 @@ def receive():
 @NC.notify_on('broadcast')
 def send(text):
     global sent
-    sent = '~~{}||'.format(text)
+    global ser
 
+    if not ser:
+        return
+    
+    sent = '~~{}||'.format(text)
+    print('sending {}'.format(sent))
     text = bytes(text.encode())
     ser.write(b"~~")
     ser.write(text)
@@ -32,7 +38,7 @@ def start():
     global ser
 
     ser = serial.Serial(
-            '/dev/ttyAMA0',
+            '/dev/ttyACM1',
             baudrate=57600,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
