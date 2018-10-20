@@ -1,6 +1,8 @@
 import heapq
 import os
 
+# implementation of huffman coding using Python's priority queues
+
 class HeapNode:
 	def __init__(self, char, freq):
 		self.char = char
@@ -22,17 +24,9 @@ class HeapNode:
 				return -1
 		return self.freq < other.freq
 
-	def __cmp__(self, other):
-		if other == None:
-			return -1
-		if not isinstance(other, HeapNode):
-			return -1
-		return self.freq > other.freq
-
 
 class HuffmanCoding:
-	def __init__(self, path):
-		self.path = path
+	def __init__(self):
 		self.heap = []
 		self.codes = {}
 		self.reverse_mapping = {}
@@ -86,6 +80,7 @@ class HuffmanCoding:
 	def get_encoded_text(self, text):
 		encoded_text = ""
 		for character in text:
+
 			encoded_text += self.codes[character]
 		return encoded_text
 
@@ -111,12 +106,48 @@ class HuffmanCoding:
 			b.append(int(byte, 2))
 		return b
 
+	def compress_input_with_predefined_tree(self, input_text):
+		text = input_text.rstrip()
 
-	def compress(self):
-		filename, file_extension = os.path.splitext(self.path)
+		encoded_text = self.get_encoded_text(text)
+		padded_encoded_text = self.pad_encoded_text(encoded_text)
+
+		b = self.get_byte_array(padded_encoded_text)
+		return(bytes(b))
+
+	def compress_file_with_predefined_tree(self, input_path):
+		filename, file_extension = os.path.splitext(input_path)
+		output_path = filename + ".bin"
+		with open(input_path, 'r+') as file, open(output_path, 'wb') as output:
+			text = file.read()
+			text = text.rstrip()
+
+			encoded_text = self.get_encoded_text(text)
+			padded_encoded_text = self.pad_encoded_text(encoded_text)
+
+			b = self.get_byte_array(padded_encoded_text)
+			output.write(bytes(b))
+
+		#print("Compressed with predefined tree")
+		return output_path
+
+	def generate_tree(self, corpus):
+		#filename, file_extension = os.path.splitext(self.path)
+		text = corpus.rstrip()
+
+		frequency = self.make_frequency_dict(text)
+		self.make_heap(frequency)
+		self.merge_nodes()
+		self.make_codes()
+
+		encoded_text = self.get_encoded_text(text)
+		padded_encoded_text = self.pad_encoded_text(encoded_text)
+
+	def compress(self, path):
+		filename, file_extension = os.path.splitext(path)
 		output_path = filename + ".bin"
 
-		with open(self.path, 'r+') as file, open(output_path, 'wb') as output:
+		with open(path, 'r+') as file, open(output_path, 'wb') as output:
 			text = file.read()
 			text = text.rstrip()
 
@@ -131,7 +162,7 @@ class HuffmanCoding:
 			b = self.get_byte_array(padded_encoded_text)
 			output.write(bytes(b))
 
-		print("Compressed")
+		#print("Compressed")
 		return output_path
 
 
@@ -161,7 +192,7 @@ class HuffmanCoding:
 
 
 	def decompress(self, input_path):
-		filename, file_extension = os.path.splitext(self.path)
+		filename, file_extension = os.path.splitext(input_path)
 		output_path = filename + "_decompressed" + ".txt"
 
 		with open(input_path, 'rb') as file, open(output_path, 'w') as output:
@@ -181,5 +212,28 @@ class HuffmanCoding:
 			
 			output.write(decompressed_text)
 
-		print("Decompressed")
+		#print("Decompressed")
 		return output_path
+
+	def decompress_from_text(self, input_text):
+		tmp_loc = "tmp.bin"
+		with open(tmp_loc, 'wb') as tmp:
+			tmp.write(input_text)
+
+		with open(tmp_loc, 'rb') as file:
+			bit_string = ""
+
+			byte = file.read(1)
+			while len(byte) != 0:
+				#print(byte)
+				byte = ord(byte)
+				bits = bin(byte)[2:].rjust(8, '0')
+				bit_string += bits
+				byte = file.read(1)
+
+			encoded_text = self.remove_padding(bit_string)
+
+			decompressed_text = self.decode_text(encoded_text)
+			
+			return(decompressed_text)
+
