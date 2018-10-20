@@ -7,6 +7,7 @@ import requests
 import logging
 
 id_queue = list()
+server = False
 
 
 class Streamer(BaseNamespace):
@@ -58,7 +59,10 @@ def queue_broadcast(data, msg_id):
 
 @NC.notify_on('broadcast')
 def broadcast_to_server(data, msg_id):
-    print('broadcasting')
+
+    if server:
+        return
+
     try:
         data = {'data': data, 'msg_id': msg_id}
         print(requests.post('http://api.pillup.org/broadcast', json=data).content)
