@@ -1,8 +1,9 @@
-from flask import Flask
-from Routes import API
+from app import create_app, socketio
+import Socket
 
+def main():
+	app = create_app()
+	socketio.run(app, host='0.0.0.0', port='8080')
 
-app = Flask(__name__)
-app.register_blueprint(API.mod)
-
-app.run(debug=True)
+if __name__ == '__main__':
+	main()
