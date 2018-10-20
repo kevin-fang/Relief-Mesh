@@ -58,8 +58,9 @@ def queue_broadcast(data, msg_id):
 
 @NC.notify_on('broadcast')
 def broadcast_to_server(data, msg_id):
+    print('broadcasting')
     try:
         data = {'data': data, 'msg_id': msg_id}
-        requests.post('http://api.pillup.org', json=data)
-    except:
-        pass
+        print(requests.post('http://api.pillup.org/broadcast', json=data).content)
+    except Exception as err:
+        print(err)

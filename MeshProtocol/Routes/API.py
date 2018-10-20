@@ -54,15 +54,17 @@ def broadcast_post():
     data = request.json['data']
     byte = bytes(data.encode())
 
+    msg_id = str(uuid4())[1:5].upper()
+    if 'msg_id' in request.json:
+        msg_id = request.json['msg_id']
+
     if len(byte) > 250:
         return _error("data too large")
 
-    msg_id = str(uuid4())[1:5].upper()
     NC.default().post_notification('queue_broadcast',
                                    threaded=False,
                                    data=data,
                                    msg_id=msg_id)
-
     return jsonify({
         "ok": True,
         "node": device_id,
