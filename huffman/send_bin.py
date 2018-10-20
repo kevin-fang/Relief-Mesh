@@ -11,6 +11,6 @@ ser = serial.Serial(
     )
 with open(sys.argv[1], 'rb') as file:
     for i in file:
-        ser.write("|~")
+        ser.write("~~")
         ser.write(i)
-        ser.write("~|")
+        ser.write("||")

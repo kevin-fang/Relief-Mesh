@@ -19,4 +19,4 @@ def encode_text(text):
 
 if __name__ == "__main__":
 	for item in sys.argv[1:]:
-		print(h.compress_input_with_predefined_tree(item).encode('utf-8'))
+		print(h.compress_input_with_predefined_tree(item))

@@ -1,6 +1,8 @@
 import heapq
 import os
 
+# implementation of huffman coding using Python's priority queues
+
 class HeapNode:
 	def __init__(self, char, freq):
 		self.char = char

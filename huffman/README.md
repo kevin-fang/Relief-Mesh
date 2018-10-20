@@ -1,4 +1,7 @@
 # Huffman Encoding for Chat Services
 
-To use:
+### Requirements
 
+- Pyserial
+
+To use:
