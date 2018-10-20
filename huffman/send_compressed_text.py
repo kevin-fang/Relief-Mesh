@@ -18,7 +18,8 @@ def send(text):
 
 
 if __name__ == "__main__":
-    text_to_send = input()
-    encoded = huffman_encode_text.encode_text(str(len(text_to_send)) + "," + text_to_send)
-    print(encoded)
-    send(encoded)
+    while True:
+        text_to_send = input()
+        encoded = huffman_encode_text.encode_text(str(len(text_to_send)) + "," + text_to_send)
+        #print(encoded)
+        send(encoded)
