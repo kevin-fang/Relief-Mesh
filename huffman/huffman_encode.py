@@ -10,5 +10,5 @@ with open('tree.bin', 'rb') as binary_file:
 	h = pickle.loads(f)
 
 # compress tree
-output_path = h.compress_with_predefined_tree(path)
+output_path = h.compress_file_with_predefined_tree(path)
 print("Compressed output to: {}".format(output_path))
