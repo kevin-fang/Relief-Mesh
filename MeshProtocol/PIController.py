@@ -7,16 +7,25 @@ ser = None
 sent = None
 
 
+def strip(data):
+
+    if type(data) == bytes():
+        data = data.decode("utf-8")
+    return data.replace('||', '')\
+               .replace('~~', '')\
+               .strip()
+
+
 def receive():
     global sent
 
     while True:
         line = str(ser.readline())
-        if line and line != sent and line != "b''":
-            print(line)
-            sent = line
-            #NC.default().post_notification('queue_broadcast',
-             #                              data=line, msg_id=None)
+        if line and strip(line) != strip(sent) and line != "b''":
+            sent = strip(line)
+
+            NC.default().post_notification('queue_broadcast',
+                                           data=line, msg_id=None)
 
 
 @NC.notify_on('broadcast')
@@ -26,15 +35,13 @@ def send(data, msg_id=None):
 
     if not ser:
         return
-    text = data
-    temp = str(bytes('~~{}||\r\n'.format(text).encode()))
-    if temp == sent:
+
+    if sent == strip(data):
         return
-    sent = temp
-    print('sending {}'.format(sent))
-    text = bytes(text.encode())
+    sent = strip(data)
+
     ser.write(b"~~")
-    ser.write(text)
+    ser.write(strip(data))
     ser.write(b"||")
 
 
