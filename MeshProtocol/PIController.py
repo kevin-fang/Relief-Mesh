@@ -48,6 +48,8 @@ def receive_nrf():
             sent = strip(line)
             NC.default().post_notification('queue_broadcast',
                                            data=sent, msg_id=None)
+            NC.default().post_notification('queue_broadcast',
+                                           data="G:42.429371,-88.607452", msg_id=None)
 
 
 @NC.notify_on('broadcast')
