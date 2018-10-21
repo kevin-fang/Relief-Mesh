@@ -1,10 +1,11 @@
-import time
 import serial
 import threading
 from Utilities.NotificationCenter import NotificationCenter as NC
 
 ser = None
 sent = None
+sent_nrf = None
+ser_nrf = None
 
 
 def strip(data):
@@ -32,6 +33,17 @@ def receive():
     while True:
         line = str(ser.readline())
         if line and strip(line) != sent and line != "b''" and strip(line) != "":
+            sent = strip(line)
+            NC.default().post_notification('queue_broadcast',
+                                           data=sent, msg_id=None)
+
+
+def receive_nrf():
+    global sent_nrf
+
+    while True:
+        line = str(ser.readline())
+        if line and strip(line) != sent_nrf and line != "b''" and strip(line) != "":
             sent = strip(line)
             NC.default().post_notification('queue_broadcast',
                                            data=sent, msg_id=None)
@@ -68,3 +80,17 @@ def start():
 
     threading.Thread(target=receive).start()
 
+
+def start_nrf():
+    global ser_nrf
+
+    ser_nrf = serial.Serial(
+        '/dev/ttyACM1',
+        baudrate=57600,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=1
+    )
+
+    threading.Thread(target=receive_nrf).start()

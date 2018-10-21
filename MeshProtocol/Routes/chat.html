@@ -164,6 +164,7 @@ p||(p=u?443:80),r=e.hostname!==location.hostname||p!==e.port,a=e.secure!==u}if(e
     if (localStorage.getItem('myid') != null) {
         myid = localStorage.getItem('myid');
     }
+
     localStorage.setItem('myid', myid);
 
     function addMessage(element) {
@@ -171,6 +172,10 @@ p||(p=u?443:80),r=e.hostname!==location.hostname||p!==e.port,a=e.secure!==u}if(e
         msg = element['data'];
         msg = msg.split(':', 2);
         console.log(msg);
+
+        if (msg[0] == 'G') {
+            return;
+        }
 
         var li = $("<li class='messageBox'>");
 
