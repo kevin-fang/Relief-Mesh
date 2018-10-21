@@ -21,7 +21,8 @@ def main():
         Controller.start_streamer()
         PIController.start()
 
-    socketio.run(app, host='0.0.0.0', port=8080 if st() == 'Darwin' else 80, debug=True, use_reloader=False)
+    host = '0.0.0.0' if option != 'rpi' else '192.168.1.1'
+    socketio.run(app, host=host, port=8080 if st() == 'Darwin' else 80, debug=True, use_reloader=False)
 
 if __name__ == '__main__':
     main()
