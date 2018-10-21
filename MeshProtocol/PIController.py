@@ -22,6 +22,7 @@ def strip(data):
                .replace(r'\r\n', '')\
                .replace(r'~~', '')\
                .replace('b\'', '')\
+               .replace('b\"', '')\
                .strip()
 
 
