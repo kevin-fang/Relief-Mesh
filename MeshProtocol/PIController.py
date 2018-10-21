@@ -9,10 +9,19 @@ sent = None
 
 def strip(data):
 
+    if not data:
+        return None
+    
     if type(data) == bytes():
-        data = data.decode("utf-8")
-    return data.replace('||', '')\
-               .replace('~~', '')\
+        data = str(data.decode("utf-8"))
+    if data[-1] == '\'':
+        data = data[0:-1]
+    return data.replace(r'||', '')\
+               .replace(r'\r', '')\
+               .replace(r'\n', '')\
+               .replace(r'\r\n', '')\
+               .replace(r'~~', '')\
+               .replace('b\'', '')\
                .strip()
 
 
@@ -21,11 +30,12 @@ def receive():
 
     while True:
         line = str(ser.readline())
-        if line and strip(line) != strip(sent) and line != "b''":
+        if line and strip(line) != sent and line != "b''":
+            print(type(sent), type(line), type(strip(sent)))
+            print(sent, line, strip(sent), strip(line))
             sent = strip(line)
-
             NC.default().post_notification('queue_broadcast',
-                                           data=line, msg_id=None)
+                                           data=sent, msg_id=None)
 
 
 @NC.notify_on('broadcast')
@@ -41,7 +51,7 @@ def send(data, msg_id=None):
     sent = strip(data)
 
     ser.write(b"~~")
-    ser.write(strip(data))
+    ser.write(bytes(strip(data).encode()))
     ser.write(b"||")
 
 
@@ -49,7 +59,7 @@ def start():
     global ser
 
     ser = serial.Serial(
-            '/dev/ttyACM1',
+            '/dev/ttyACM0',
             baudrate=57600,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
