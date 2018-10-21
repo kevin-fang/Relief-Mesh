@@ -16,7 +16,6 @@ def strip(data):
         data = str(data.decode("utf-8"))
     if data[-1] == '\'':
         data = data[0:-1]
-    print(data)
     return data.replace(r'||', '')\
                .replace(r'\r', '')\
                .replace(r'\n', '')\
