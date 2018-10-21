@@ -32,7 +32,7 @@ def receive():
 
     while True:
         line = str(ser.readline())
-        if line and strip(line) != sent and line != "b''":
+        if line and strip(line) != sent and line != "b''" and strip(line) != "":
             print(type(sent), type(line), type(strip(sent)))
             print(sent, line, strip(sent), strip(line))
             sent = strip(line)
