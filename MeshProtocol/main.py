@@ -20,6 +20,10 @@ def main():
     elif option == 'rpi':
         Controller.start_streamer()
         PIController.start()
+    elif option == 'bridge':
+        Controller.start_streamer()
+        PIController.start()
+        PIController.start_nrf()
 
     host = '0.0.0.0' if option != 'rpi' else '192.168.1.1'
     socketio.run(app, host=host, port=8080 if st() == 'Darwin' else 80, debug=True, use_reloader=False)

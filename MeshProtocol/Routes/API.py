@@ -83,6 +83,12 @@ def reset_get():
 
 @mod.route('/chat', methods=['GET'])
 def chat_get():
-    print(request.url_root[:-1])
+    # print(request.url_root[:-1])
     data = open('Routes/chat.html').read()
+    return data.replace('$base_url', request.url_root[:-1])
+
+
+@mod.route('/map', methods=['GET'])
+def map_get():
+    data = open('Routes/map.html').read()
     return data.replace('$base_url', request.url_root[:-1])
