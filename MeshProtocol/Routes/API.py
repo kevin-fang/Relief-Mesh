@@ -76,7 +76,9 @@ def broadcast_post():
 
 @mod.route('/reset', methods=['GET'])
 def reset_get():
+    global msg_data
     msg_data = {}
+    return jsonify(ok=True)
 
 
 @mod.route('/chat', methods=['GET'])
