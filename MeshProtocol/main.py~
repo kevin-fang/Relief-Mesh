@@ -15,7 +15,7 @@ def main():
 
     if option == 'server':
         Controller.server = True
-    elif option == 'client':
+    elif option == 'clinet':
         Controller.start_streamer()
     elif option == 'rpi':
         Controller.start_streamer()
